@@ -79,3 +79,7 @@ app/
 tests/
   test_api.py
 ```
+
+## Para retomar el proyecto
+
+Arquitectura, decisiones técnicas, cómo extenderlo y pendientes: [DESARROLLO.md](DESARROLLO.md).

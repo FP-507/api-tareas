@@ -72,8 +72,11 @@ def listar_tareas(
     return list(session.exec(consulta).all())
 
 
+# IMPORTANTE: esta ruta debe declararse antes de /tareas/{tarea_id}; si no, FastAPI
+# intentaría interpretar "resumen" como un id y respondería 422.
 @app.get("/tareas/resumen", response_model=Resumen, tags=["estadísticas"])
 def resumen(session: SessionDep) -> Resumen:
+    """Cuenta en la base (no en Python) totales, completadas, vencidas y tareas por prioridad."""
     total = session.exec(select(func.count()).select_from(Tarea)).one()
     completadas = session.exec(
         select(func.count()).select_from(Tarea).where(Tarea.completada == True)  # noqa: E712
