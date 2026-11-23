@@ -107,3 +107,16 @@ def test_resumen(client):
     assert r["pendientes"] == 2
     assert r["vencidas"] == 1
     assert r["por_prioridad"] == {"baja": 1, "media": 1, "alta": 1}
+
+
+def test_demo_siembra_solo_con_variable_y_tabla_vacia(monkeypatch):
+    from app.demo import sembrar_si_corresponde
+
+    engine = create_engine("sqlite://", connect_args={"check_same_thread": False}, poolclass=StaticPool)
+    SQLModel.metadata.create_all(engine)
+    with Session(engine) as session:
+        monkeypatch.delenv("SEMBRAR_DEMO", raising=False)
+        assert sembrar_si_corresponde(session) == 0
+        monkeypatch.setenv("SEMBRAR_DEMO", "1")
+        assert sembrar_si_corresponde(session) == 5
+        assert sembrar_si_corresponde(session) == 0  # ya no está vacía: no duplica

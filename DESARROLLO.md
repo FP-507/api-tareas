@@ -37,6 +37,13 @@ Variable de entorno opcional: `DATABASE_URL` (por defecto `sqlite:///./tareas.db
 
 `tests/test_api.py` sobrescribe la dependencia `get_session` (`app.dependency_overrides`) con una base SQLite en memoria y `StaticPool`, de modo que todas las conexiones vean la misma base y cada test empiece limpio. Cubre crear y leer, validación (422), 404, `PATCH` parcial, borrado, filtros y búsqueda, paginación y el resumen. La CI los corre en cada push.
 
+## Despliegue (demo pública en Render)
+
+- `render.yaml` define el servicio (Docker, plan gratuito). En Render: **New > Blueprint**, elegir este repositorio y confirmar. Cada `push` a `main` vuelve a desplegar.
+- El `Dockerfile` escucha en `$PORT` (lo pone Render; en local, 8000) y corre como usuario sin privilegios.
+- `SEMBRAR_DEMO=1` carga datos de ejemplo al arrancar si la base está vacía (`app/demo.py`).
+- Plan gratuito: el servicio se duerme tras 15 minutos sin uso (el primer pedido tarda cerca de un minuto) y el disco no es persistente, así que la demo vuelve a los datos de ejemplo en cada reinicio. Para guardar datos de verdad haría falta un disco persistente o una base externa (cambiar `DATABASE_URL`).
+
 ## Cómo extenderlo
 
 - **Nuevo campo:** agregarlo a `TareaBase` (y como opcional a `TareaActualizar`). SQLModel no migra tablas existentes: en desarrollo basta con borrar `tareas.db`; en producción habría que sumar Alembic.

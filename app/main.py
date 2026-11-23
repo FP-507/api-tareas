@@ -11,13 +11,16 @@ from typing import Annotated
 from fastapi import Depends, FastAPI, HTTPException, Query, status
 from sqlmodel import Session, col, func, select
 
-from .database import crear_tablas, get_session
+from .database import crear_tablas, engine, get_session
+from .demo import sembrar_si_corresponde
 from .models import Prioridad, Resumen, Tarea, TareaActualizar, TareaCrear, TareaLeer
 
 
 @asynccontextmanager
 async def lifespan(_: FastAPI):
     crear_tablas()
+    with Session(engine) as session:
+        sembrar_si_corresponde(session)
     yield
 
 

@@ -1,0 +1,13 @@
+# Blueprint de Render: en el panel, "New > Blueprint" y elegir este repositorio.
+# Plan gratuito: el servicio se duerme tras 15 min sin uso (el primer pedido tarda ~1 min)
+# y su disco no es persistente, así que la demo vuelve a los datos de ejemplo al reiniciarse.
+services:
+  - type: web
+    name: api-tareas
+    runtime: docker
+    plan: free
+    healthCheckPath: /
+    autoDeploy: true
+    envVars:
+      - key: SEMBRAR_DEMO
+        value: "1"
